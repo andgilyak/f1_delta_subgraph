@@ -1,0 +1,16 @@
+{
+  "name": "delta",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ andgilyak/f1-delta-time",
+    "create-local": "graph create --node http://localhost:8020/ andgilyak/f1-delta-time",
+    "remove-local": "graph remove --node http://localhost:8020/ andgilyak/f1-delta-time",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 andgilyak/f1-delta-time"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.19.0",
+    "@graphprotocol/graph-ts": "0.19.0"
+  }
+}

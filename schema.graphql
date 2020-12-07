@@ -1,0 +1,46 @@
+type Item @entity {
+  "Item id"
+  id: ID!
+  "Item content"
+  value: String
+  owner: Owner
+}
+
+type Owner @entity {
+  "Owner address"
+  id: ID!
+  "Owner items"
+  items:[Item!] @derivedFrom(field: "owner")
+}
+
+type TransferItem @entity {
+  "Transfer transaction hash"
+  id: ID!
+  "Transferred token"
+  token: Item
+  "Previous owner"
+  from: Owner
+  "New owner"
+  to: Owner
+}
+
+type Pauser @entity {
+  "Pauser address"
+  id: ID!
+  "Whether Pauser is active. It would be false if pauser was added and then removed"
+  active: Boolean
+}
+
+type Minter @entity {
+  "Minter address"
+  id: ID!
+  "Whether Minter is active. It would be false if pauser was added and then removed"
+  active: Boolean
+}
+
+type ContractOwner @entity {
+  "Contract Owner address"
+  id: ID!
+  "Whether Contract Owner is active. It would be false if this owner was changed to another one"
+  active: Boolean
+}
