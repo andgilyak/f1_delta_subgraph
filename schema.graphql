@@ -1,3 +1,14 @@
+type TransferItem @entity {
+  "Transfer transaction hash + item id"
+  id: ID!
+  "Transferred token"
+  token: Item
+  "Previous owner"
+  from: Owner
+  "New owner"
+  to: Owner
+}
+
 type Item @entity {
   "Item id"
   id: ID!
@@ -13,16 +24,6 @@ type Owner @entity {
   items:[Item!] @derivedFrom(field: "owner")
 }
 
-type TransferItem @entity {
-  "Transfer transaction hash"
-  id: ID!
-  "Transferred token"
-  token: Item
-  "Previous owner"
-  from: Owner
-  "New owner"
-  to: Owner
-}
 
 type Pauser @entity {
   "Pauser address"

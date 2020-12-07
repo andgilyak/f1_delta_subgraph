@@ -70,16 +70,17 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   if (newowner == null) {
     newowner = new ContractOwner(event.params.newOwner.toHex())
   }
-
-  let oldowner = ContractOwner.load(event.params.previousOwner.toHex())
-  if (oldowner == null) {
-    oldowner = new ContractOwner(event.params.previousOwner.toHex())
+  if (event.params.previousOwner.toHex()!= '0x0000000000000000000000000000000000000000') {
+    let oldowner = ContractOwner.load(event.params.previousOwner.toHex())
+    if (oldowner == null) {
+      oldowner = new ContractOwner(event.params.previousOwner.toHex())
+      oldowner.active=false
+      oldowner.save()
+    }
   }
 
   newowner.active=true
-  oldowner.active=false
   newowner.save()
-  oldowner.save()
 }
 
 export function handlePaused(event: Paused): void {
@@ -109,33 +110,6 @@ export function handleRelayHubChanged(event: RelayHubChanged): void {
 }
 
 export function handleTransfer(event: Transfer): void {
-  let item = Item.load(event.params._tokenId.toString())
-  if (item == null) {
-    item = new Item(event.params._tokenId.toString())
-  }
-
-  let oldowner = Owner.load(event.params._from.toHex())
-  if (oldowner == null) {
-    oldowner = new Owner(event.params._from.toHex())
-  }
-
-  let newowner = Owner.load(event.params._to.toHex())
-  if (newowner == null) {
-    newowner = new Owner(event.params._to.toHex())
-  }
-
-  let transf = TransferItem.load(event.transaction.hash.toHex())
-  if (transf == null) {
-    transf = new TransferItem(event.transaction.hash.toHex())
-  }
-
-  item.owner=newowner.id
-  item.save()
-
-  transf.token=item.id
-  transf.from=oldowner.id
-  transf.to=newowner.id
-  transf.save()
 }
 
 export function handleTransferBatch(event: TransferBatch): void {
@@ -143,7 +117,34 @@ export function handleTransferBatch(event: TransferBatch): void {
 }
 
 export function handleTransferSingle(event: TransferSingle): void {
-  //No need to use it since Transfer event also occures
+  let item = Item.load(event.params._id.toString())
+  if (item == null) {
+    item = new Item(event.params._id.toString())
+  }
+
+  let oldowner = Owner.load(event.params._from.toHex())
+  if (oldowner == null) {
+    oldowner = new Owner(event.params._from.toHex())
+    oldowner.save()
+  }
+
+  let newowner = Owner.load(event.params._to.toHex())
+  if (newowner == null) {
+    newowner = new Owner(event.params._to.toHex())
+    newowner.save()
+  }
+
+  let transf = TransferItem.load(event.transaction.hash.toHex()+event.params._id.toString())
+  if (transf == null) {
+    transf = new TransferItem(event.transaction.hash.toHex()+event.params._id.toString())
+  }
+  item.owner=newowner.id
+  item.save()
+
+  transf.token=item.id
+  transf.from=event.params._from.toHex()
+  transf.to=event.params._to.toHex()
+  transf.save()
 }
 
 export function handleURI(event: URI): void {

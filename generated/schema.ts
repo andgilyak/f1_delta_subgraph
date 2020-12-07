@@ -12,6 +12,88 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class TransferItem extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save TransferItem entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save TransferItem entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("TransferItem", id.toString(), this);
+  }
+
+  static load(id: string): TransferItem | null {
+    return store.get("TransferItem", id) as TransferItem | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get token(): string | null {
+    let value = this.get("token");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set token(value: string | null) {
+    if (value === null) {
+      this.unset("token");
+    } else {
+      this.set("token", Value.fromString(value as string));
+    }
+  }
+
+  get from(): string | null {
+    let value = this.get("from");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set from(value: string | null) {
+    if (value === null) {
+      this.unset("from");
+    } else {
+      this.set("from", Value.fromString(value as string));
+    }
+  }
+
+  get to(): string | null {
+    let value = this.get("to");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set to(value: string | null) {
+    if (value === null) {
+      this.unset("to");
+    } else {
+      this.set("to", Value.fromString(value as string));
+    }
+  }
+}
+
 export class Item extends Entity {
   constructor(id: string) {
     super();
@@ -106,86 +188,21 @@ export class Owner extends Entity {
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
-}
 
-export class TransferItem extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save TransferItem entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save TransferItem entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("TransferItem", id.toString(), this);
-  }
-
-  static load(id: string): TransferItem | null {
-    return store.get("TransferItem", id) as TransferItem | null;
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get token(): string | null {
-    let value = this.get("token");
+  get items(): Array<string> | null {
+    let value = this.get("items");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toStringArray();
     }
   }
 
-  set token(value: string | null) {
+  set items(value: Array<string> | null) {
     if (value === null) {
-      this.unset("token");
+      this.unset("items");
     } else {
-      this.set("token", Value.fromString(value as string));
-    }
-  }
-
-  get from(): string | null {
-    let value = this.get("from");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set from(value: string | null) {
-    if (value === null) {
-      this.unset("from");
-    } else {
-      this.set("from", Value.fromString(value as string));
-    }
-  }
-
-  get to(): string | null {
-    let value = this.get("to");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set to(value: string | null) {
-    if (value === null) {
-      this.unset("to");
-    } else {
-      this.set("to", Value.fromString(value as string));
+      this.set("items", Value.fromStringArray(value as Array<string>));
     }
   }
 }
