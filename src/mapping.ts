@@ -110,16 +110,9 @@ export function handleRelayHubChanged(event: RelayHubChanged): void {
 }
 
 export function handleTransfer(event: Transfer): void {
-}
-
-export function handleTransferBatch(event: TransferBatch): void {
-  //No need to use it since Transfer event occures for every item of the batch
-}
-
-export function handleTransferSingle(event: TransferSingle): void {
-  let item = Item.load(event.params._id.toString())
+  let item = Item.load(event.params._tokenId.toString())
   if (item == null) {
-    item = new Item(event.params._id.toString())
+    item = new Item(event.params._tokenId.toString())
   }
 
   let oldowner = Owner.load(event.params._from.toHex())
@@ -134,9 +127,9 @@ export function handleTransferSingle(event: TransferSingle): void {
     newowner.save()
   }
 
-  let transf = TransferItem.load(event.transaction.hash.toHex()+event.params._id.toString())
+  let transf = TransferItem.load(event.transaction.hash.toHex()+event.params._tokenId.toString())
   if (transf == null) {
-    transf = new TransferItem(event.transaction.hash.toHex()+event.params._id.toString())
+    transf = new TransferItem(event.transaction.hash.toHex()+event.params._tokenId.toString())
   }
   item.owner=newowner.id
   item.save()
@@ -145,6 +138,15 @@ export function handleTransferSingle(event: TransferSingle): void {
   transf.from=event.params._from.toHex()
   transf.to=event.params._to.toHex()
   transf.save()
+}
+
+export function handleTransferBatch(event: TransferBatch): void {
+  //No need to use it since Transfer event occures for every item of the batch
+}
+
+export function handleTransferSingle(event: TransferSingle): void {
+  //No need to use it since Transfer event occures for every TransferSingle
+
 }
 
 export function handleURI(event: URI): void {
